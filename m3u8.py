@@ -42,8 +42,9 @@ def download(url: str, save_to: str, *, full=False):
             times = 3
             while times >= 0:
                 try:
-                    r = requests.get(ts_url, timeout=5)
+                    r = requests.get(ts_url, headers={"referer": "https://www.wanmen.org/"}, timeout=5)
                     if r.status_code != 200:
+                        # print("Status Code =", r.status_code)
                         raise RuntimeError()
 
                     f.write(r.content)
