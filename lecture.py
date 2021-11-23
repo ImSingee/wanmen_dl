@@ -19,6 +19,7 @@ def get_token():
 
 
 def fetch_course(course_id: str, course_name: str, base_dir: str):
+    course_name = to_name(course_name)
     base_dir = os.path.join(base_dir, course_name)
 
     print(f"开始获取 {course_name} 的课程信息")

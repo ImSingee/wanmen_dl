@@ -1,5 +1,9 @@
+if [ $# -eq 2 ] ; then
+    python register.py $1 $2
+fi
+
 while true; do
-    python main.py $1 $2
+    python main.py $1
 
     if [ "$?" == 0 ]; then
         break
