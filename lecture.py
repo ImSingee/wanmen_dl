@@ -4,6 +4,7 @@ import hashlib
 import requests
 from config import CONFIG
 from m3u8 import download
+from utils import to_name
 
 
 def get_token():
@@ -41,8 +42,10 @@ def fetch_course(course_id: str, course_name: str, base_dir: str):
 
     print("获取成功，即将开始下载")
     for i, chapter in enumerate(chapters, 1):
-        print(f"开始下载第 {i} 章：{chapter['name']}")
-        chapter_dir = os.path.join(base_dir, f"{i} - {chapter['name']}")
+        chapter_name = to_name(chapter['name'])
+
+        print(f"开始下载第 {i} 章：{chapter_name}")
+        chapter_dir = os.path.join(base_dir, f"{i} - {chapter_name}")
         os.makedirs(chapter_dir, exist_ok=True)
         for j, lecture in enumerate(chapter['children'], 1):
             fetch_single(f'{i}-{j}', lecture, chapter_dir)
@@ -51,7 +54,7 @@ def fetch_course(course_id: str, course_name: str, base_dir: str):
 
 def fetch_single(lecture_index: str, lecture_info: dict, base_dir: str):
     lecture_id = lecture_info['_id']
-    lecture_name = lecture_index + ' ' + lecture_info['name']
+    lecture_name = lecture_index + ' ' + to_name(lecture_info['name'])
 
     print(f"[{lecture_name}] 正在准备下载")
 
