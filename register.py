@@ -10,5 +10,5 @@ if __name__ == '__main__':
 
     print(CONFIG)
 
-    with open('config.json', 'r') as f:
+    with open('config.json', 'w') as f:
         json.dump(CONFIG, f, indent=4, ensure_ascii=False)
