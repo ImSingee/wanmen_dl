@@ -1,9 +1,9 @@
 if [ $# -eq 2 ] ; then
-    python register.py $1 $2
+    python register.py "$1" "$2"
 fi
 
 while true; do
-    python download_course.py $1
+    python download_course.py "$1"
 
     if [ "$?" == 0 ]; then
         break
@@ -12,4 +12,4 @@ while true; do
     sleep 10
 done
 
-python download_docs.py $1
+python download_docs.py "$1"
