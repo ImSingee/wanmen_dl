@@ -23,12 +23,12 @@ def download_documents(course_id: str, course_name: str, base_dir: str):
     documents_dir = os.path.join(base_dir, "资料")
     os.makedirs(documents_dir, exist_ok=True)
 
-    with open(os.path.join(documents_dir, "meta.json"), "r") as f:
+    with open(os.path.join(documents_dir, "meta.json"), "w") as f:
         json.dump(documents, f)
 
     documents = sorted(documents, key=lambda x: x['order'])
     for i, doc in enumerate(documents, 1):
-        name = f"{i} - {doc['name']}.{doc['ext']}"
+        name = to_name(f"{i} - {doc['name']}.{doc['ext']}")
         to = os.path.join(documents_dir, name)
 
         if os.path.exists(to):
