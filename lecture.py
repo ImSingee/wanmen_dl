@@ -82,7 +82,13 @@ def fetch_single(lecture_index: str, lecture_info: dict, base_dir: str):
 
     lecture_info = r.json()
 
-    video_m3u8_url = lecture_info['video']['hls']['pcHigh']
+    # print(lecture_info)
+
+    if lecture_info.get('video'):
+        video_m3u8_url = lecture_info['video']['hls']['pcHigh']
+    else:
+        video_m3u8_url = lecture_info['hls']['pcHigh']
+
     print(f"[{lecture_name}] 开始下载")
     download(video_m3u8_url, save_to)
     print(f"[{lecture_name}] 下载完成")
