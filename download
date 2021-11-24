@@ -3,7 +3,7 @@ if [ $# -eq 2 ] ; then
 fi
 
 while true; do
-    python main.py $1
+    python download_course.py $1
 
     if [ "$?" == 0 ]; then
         break
@@ -11,3 +11,5 @@ while true; do
 
     sleep 10
 done
+
+python download_docs.py $1
