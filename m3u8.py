@@ -23,9 +23,25 @@ def parse(m3u8: str) -> List[str]:
 
     return result
 
+def download(url: str, mid_url: str, save_to: str, *, full=False):
+    result = download_for(url)
+    if result:
+        return
+    
+    print("超清版本下载失败，常识下载高清版本")
+    result = download_for(mid_url)
+    if result:
+        return
+    
+    print("高清版本下载仍失败 -> 终止")
+    exit(-1)
 
-def download(url: str, save_to: str, *, full=False):
-    m3u8 = parse(fetch(url))
+def download_for(url: str, save_to: str, *, full=False):
+    try:
+        m3u8 = parse(fetch(url))
+    except Exception as e:
+        print("无法获取 m3u8 文件", e)
+        return False
 
     if full:
         print(f"获取 m3u8 文件成功，该文件共有 {len(m3u8)} 个片段")
@@ -43,9 +59,11 @@ def download(url: str, save_to: str, *, full=False):
             while times >= 0:
                 try:
                     r = requests.get(ts_url, headers={"referer": "https://www.wanmen.org/"}, timeout=5)
-                    if r.status_code != 200:
-                        # print("Status Code =", r.status_code)
-                        raise RuntimeError()
+                    if r.status_code == 404:
+                        print("片段丢失")
+                        return False
+
+                    r.raise_for_status()
 
                     f.write(r.content)
                     break
@@ -54,7 +72,7 @@ def download(url: str, save_to: str, *, full=False):
                     times -= 1
             if times < 0:
                 print("遇到错误，多次重试仍失败 -> 终止")
-                exit(-1)
+                return False
     print()
 
     mp4_part_file = save_to + '.part.mp4'
@@ -64,6 +82,7 @@ def download(url: str, save_to: str, *, full=False):
     os.rename(mp4_part_file, save_to)
 
     print("下载完成！")
+    return True
 
 
 def ffmpegConvertToMp4(input_file_path, output_file_path):
