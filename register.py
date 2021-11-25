@@ -4,7 +4,13 @@ from config import CONFIG
 
 if __name__ == '__main__':
     course_id = sys.argv[1]
-    course_name = sys.argv[2]
+    
+    if len(sys.argv) > 2:
+        course_name = sys.argv[2]
+    else:
+        from names import names
+        course_name = names[course_id]
+        print(f"Course Name: {course_name}")
 
     CONFIG['NameMap'][course_id] = course_name
 
