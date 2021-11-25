@@ -7,13 +7,18 @@ from urllib.parse import urljoin
 def fetch(url: str) -> str:
     print("Fetching", url)
     r = requests.get(url)
-    if r.status_code != 200:
-        print("Fetch fail, status =", r.status_code)
-        exit(-2)
+    if r.status_code == 404:
+        return None
+    
+    r.raise_for_status()
+    
     return r.content.decode()
 
 
 def parse(m3u8: str) -> List[str]:
+    if m3u8 is None:
+        return None
+    
     lines = m3u8.split('\n')
     result = []
     for line in lines:
@@ -37,10 +42,9 @@ def download(url: str, mid_url: str, save_to: str, *, full=False):
     exit(-1)
 
 def download_for(url: str, save_to: str, *, full=False):
-    try:
-        m3u8 = parse(fetch(url))
-    except Exception as e:
-        print("无法获取 m3u8 文件", e)
+    m3u8 = parse(fetch(url))
+    if m3u8 is None:
+        print("m3u8 文件丢失")
         return False
 
     if full:
