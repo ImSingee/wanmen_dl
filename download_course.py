@@ -58,11 +58,13 @@ def fetch_single(lecture_index: str, lecture_info: dict, base_dir: str):
 
     if lecture_info.get('video'):
         video_m3u8_url = lecture_info['video']['hls']['pcHigh']
+        video_m3u8_url_mid = lecture_info['video']['hls']['pcMid']
     else:
         video_m3u8_url = lecture_info['hls']['pcHigh']
+        video_m3u8_url_mid = lecture_info['hls']['pcMid']
 
     print(f"[{lecture_name}] 开始下载")
-    download(video_m3u8_url, save_to)
+    download(video_m3u8_url, video_m3u8_url_mid, save_to)
     print(f"[{lecture_name}] 下载完成")
 
 
