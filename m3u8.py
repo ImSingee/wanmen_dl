@@ -24,12 +24,12 @@ def parse(m3u8: str) -> List[str]:
     return result
 
 def download(url: str, mid_url: str, save_to: str, *, full=False):
-    result = download_for(url)
+    result = download_for(url, save_to, full=full)
     if result:
         return
     
     print("超清版本下载失败，常识下载高清版本")
-    result = download_for(mid_url)
+    result = download_for(mid_url, save_to, full=full)
     if result:
         return
     
