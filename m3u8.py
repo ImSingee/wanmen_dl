@@ -33,7 +33,7 @@ def download(url: str, mid_url: str, save_to: str, *, full=False):
     if result:
         return
     
-    print("超清版本下载失败，常识下载高清版本")
+    print("超清版本下载失败，尝试下载高清版本")
     result = download_for(mid_url, save_to, full=full)
     if result:
         return
