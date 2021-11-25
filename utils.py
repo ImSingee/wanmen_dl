@@ -30,7 +30,7 @@ def get_headers():
     }
 
 
-def to_name(title):
+def to_name(title: str):
     title = title.replace('\\', ' ', sys.maxsize)
     title = title.replace('/', ' ', sys.maxsize)
     title = title.replace(':', ' ', sys.maxsize)
@@ -41,4 +41,4 @@ def to_name(title):
     title = title.replace('>', ' ', sys.maxsize)
     title = title.replace('|', ' ', sys.maxsize)
 
-    return title
+    return title.strip()
