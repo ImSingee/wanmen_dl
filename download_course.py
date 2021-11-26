@@ -24,8 +24,7 @@ def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=
     print("获取成功，即将开始下载")
 
     if lecture_id is None:  # 下载全部
-        for i, chapter in enumerate(chapters, 1):
-            fetch_chapter(i, chapter, base_dir)
+        fetch_all_chapters(chapters, base_dir)
         print(f"{course_name} 下载完成")
     else:
         found = False
@@ -45,6 +44,11 @@ def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=
         if not found:
             print(f"lecture_id = {lecture_id} 的课程不存在")
             return
+
+
+def fetch_all_chapters(chapters, base_dir: str):
+    for i, chapter in enumerate(chapters, 1):
+        fetch_chapter(i, chapter, base_dir)
 
 
 def fetch_chapter(chapter_index: int, chapter: dict, base_dir: str):
