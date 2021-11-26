@@ -47,8 +47,22 @@ def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=
 
 
 def fetch_all_chapters(chapters, base_dir: str):
+    fetch_all_chapters_with_multiprocessing(chapters, base_dir)
+
+
+def fetch_all_chapters_with_single_thread(chapters, base_dir: str):
     for i, chapter in enumerate(chapters, 1):
         fetch_chapter(i, chapter, base_dir)
+
+
+def fetch_all_chapters_with_multiprocessing(chapters, base_dir: str):
+    from multiprocessing import Pool
+
+    with Pool() as p:
+        for i, chapter in enumerate(chapters, 1):
+            p.apply_async(fetch_chapter, (i, chapter, base_dir))
+
+        p.join()
 
 
 def fetch_chapter(chapter_index: int, chapter: dict, base_dir: str):
