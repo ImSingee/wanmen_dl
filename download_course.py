@@ -1,6 +1,7 @@
 import os
 import sys
 import requests
+from requests import Session
 from config import CONFIG
 from m3u8 import download
 from utils import to_name, get_headers
@@ -40,7 +41,7 @@ def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=
                 found = True
                 chapter_dir = os.path.join(base_dir, f"{i} - {chapter_name}")
                 os.makedirs(chapter_dir, exist_ok=True)
-                fetch_single(f'{i}-{j}', lecture, chapter_dir)
+                fetch_single(None, f'{i}-{j}', lecture, chapter_dir)
         if not found:
             print(f"lecture_id = {lecture_id} 的课程不存在")
             return
@@ -75,13 +76,15 @@ def fetch_chapter(chapter_index: int, chapter: dict, base_dir: str):
     print(f"开始下载第 {chapter_index} 章：{chapter_name}")
     chapter_dir = os.path.join(base_dir, f"{chapter_index} - {chapter_name}")
     os.makedirs(chapter_dir, exist_ok=True)
-    for j, lecture in enumerate(chapter['children'], 1):
-        fetch_single(f'{chapter_index}-{j}', lecture, chapter_dir)
+
+    with Session() as session:
+        for j, lecture in enumerate(chapter['children'], 1):
+            fetch_single(session, f'{chapter_index}-{j}', lecture, chapter_dir)
 
     print(f"第 {chapter_index} 章：{chapter_name} 下载完成")
 
 
-def fetch_single(lecture_index: str, lecture_info: dict, base_dir: str):
+def fetch_single(session, lecture_index: str, lecture_info: dict, base_dir: str):
     lecture_id = lecture_info['_id']
     lecture_name = lecture_index + ' ' + to_name(lecture_info['name'])
 
@@ -93,7 +96,10 @@ def fetch_single(lecture_index: str, lecture_info: dict, base_dir: str):
         print(save_to, "已存在 -> 跳过")
         return
 
-    r = requests.get(f'https://api.wanmen.org/4.0/content/lectures/{lecture_id}?routeId=main&debug=1', headers=get_headers())
+    if session is None:
+        session = requests
+
+    r = session.get(f'https://api.wanmen.org/4.0/content/lectures/{lecture_id}?routeId=main&debug=1', headers=get_headers())
 
     if r.status_code != 200:
         print("错误 - 无法获取课程信息")
@@ -112,7 +118,7 @@ def fetch_single(lecture_index: str, lecture_info: dict, base_dir: str):
         video_m3u8_url_mid = lecture_info['hls']['pcMid']
 
     print(f"[{lecture_name}] 开始下载")
-    download(video_m3u8_url, video_m3u8_url_mid, save_to)
+    download(session, video_m3u8_url, video_m3u8_url_mid, save_to)
     print(f"[{lecture_name}] 下载完成")
 
 

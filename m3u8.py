@@ -1,24 +1,23 @@
 import os
 from typing import List
-import requests
 from urllib.parse import urljoin
 
 
-def fetch(url: str) -> str:
+def fetch(session, url: str) -> str:
     print("Fetching", url)
-    r = requests.get(url)
+    r = session.get(url)
     if r.status_code == 404:
         return None
-    
+
     r.raise_for_status()
-    
+
     return r.content.decode()
 
 
 def parse(m3u8: str) -> List[str]:
     if m3u8 is None:
         return None
-    
+
     lines = m3u8.split('\n')
     result = []
     for line in lines:
@@ -28,21 +27,23 @@ def parse(m3u8: str) -> List[str]:
 
     return result
 
-def download(url: str, mid_url: str, save_to: str, *, full=False):
-    result = download_for(url, save_to, full=full)
+
+def download(session, url: str, mid_url: str, save_to: str, *, full=False):
+    result = download_for(session, url, save_to, full=full)
     if result:
         return
-    
+
     print("超清版本下载失败，尝试下载高清版本")
-    result = download_for(mid_url, save_to, full=full)
+    result = download_for(session, mid_url, save_to, full=full)
     if result:
         return
-    
+
     print("高清版本下载仍失败 -> 终止")
     exit(-1)
 
-def download_for(url: str, save_to: str, *, full=False):
-    m3u8 = parse(fetch(url))
+
+def download_for(session, url: str, save_to: str, *, full=False):
+    m3u8 = parse(fetch(session, url))
     if m3u8 is None:
         print("m3u8 文件丢失")
         return False
@@ -62,7 +63,7 @@ def download_for(url: str, save_to: str, *, full=False):
             times = 3
             while times >= 0:
                 try:
-                    r = requests.get(ts_url, headers={"referer": "https://www.wanmen.org/"}, timeout=5)
+                    r = session.get(ts_url, headers={"referer": "https://www.wanmen.org/"}, timeout=5)
                     if r.status_code == 404:
                         print("片段丢失")
                         return False
