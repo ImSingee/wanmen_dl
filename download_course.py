@@ -63,14 +63,19 @@ def fetch_all_chapters_with_single_thread(chapters, base_dir: str):
 
 
 def fetch_all_chapters_with_multiprocessing(chapters, base_dir: str):
-    from multiprocessing import Pool
+    # from multiprocessing import Pool
+    from multiprocessing.pool import ThreadPool as Pool
 
+    errors = []
     with Pool(CONFIG['NumProcess']) as p:
         for i, chapter in enumerate(chapters, 1):
-            p.apply_async(fetch_chapter, (i, chapter, base_dir))
+            p.apply_async(fetch_chapter, (i, chapter, base_dir), error_callback=lambda e: errors.append(e))
 
         p.close()
         p.join()
+
+    if len(errors) != 0:
+        raise errors[0]
 
 
 def fetch_chapter(chapter_index: int, chapter: dict, base_dir: str):
