@@ -48,7 +48,10 @@ def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=
 
 
 def fetch_all_chapters(chapters, base_dir: str):
-    if CONFIG['MultiProcess']:
+    if CONFIG['NumProcess'] != 1:
+        if CONFIG['NumProcess'] == 0:
+            CONFIG['NumProcess'] = os.cpu_count()
+
         fetch_all_chapters_with_multiprocessing(chapters, base_dir)
     else:
         fetch_all_chapters_with_single_thread(chapters, base_dir)
@@ -62,7 +65,7 @@ def fetch_all_chapters_with_single_thread(chapters, base_dir: str):
 def fetch_all_chapters_with_multiprocessing(chapters, base_dir: str):
     from multiprocessing import Pool
 
-    with Pool(32) as p:
+    with Pool(CONFIG['NumProcess']) as p:
         for i, chapter in enumerate(chapters, 1):
             p.apply_async(fetch_chapter, (i, chapter, base_dir))
 
