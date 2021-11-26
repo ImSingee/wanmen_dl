@@ -61,7 +61,7 @@ def fetch_all_chapters_with_single_thread(chapters, base_dir: str):
 def fetch_all_chapters_with_multiprocessing(chapters, base_dir: str):
     from multiprocessing import Pool
 
-    with Pool() as p:
+    with Pool(32) as p:
         for i, chapter in enumerate(chapters, 1):
             p.apply_async(fetch_chapter, (i, chapter, base_dir))
 
