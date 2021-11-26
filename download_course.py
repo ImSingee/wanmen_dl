@@ -83,14 +83,14 @@ def fetch_all_chapters_with_multiprocessing(chapters, base_dir: str):
             chapter_dir = os.path.join(base_dir, f"{chapter_index} - {chapter_name}")
             os.makedirs(chapter_dir, exist_ok=True)
 
-            # 预先跳过
-            tip = should_skip(f'{chapter_index}-{j}', lecture, chapter_dir)
-            if tip is not None:
-                print(tip)
-                continue
-
-            # 加入下载队列
             for j, lecture in enumerate(chapter['children'], 1):
+                # 预先跳过
+                tip = should_skip(f'{chapter_index}-{j}', lecture, chapter_dir)
+                if tip is not None:
+                    print(tip)
+                    continue
+
+                # 加入下载队列
                 p.apply_async(fetch_single, (f'{chapter_index}-{j}', lecture, chapter_dir), error_callback=lambda err: errors.append(err))
 
         p.close()
