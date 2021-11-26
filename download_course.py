@@ -25,13 +25,7 @@ def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=
 
     if lecture_id is None:  # 下载全部
         for i, chapter in enumerate(chapters, 1):
-            chapter_name = to_name(chapter['name'])
-
-            print(f"开始下载第 {i} 章：{chapter_name}")
-            chapter_dir = os.path.join(base_dir, f"{i} - {chapter_name}")
-            os.makedirs(chapter_dir, exist_ok=True)
-            for j, lecture in enumerate(chapter['children'], 1):
-                fetch_single(f'{i}-{j}', lecture, chapter_dir)
+            fetch_chapter(i, chapter, base_dir)
         print(f"{course_name} 下载完成")
     else:
         found = False
@@ -51,6 +45,18 @@ def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=
         if not found:
             print(f"lecture_id = {lecture_id} 的课程不存在")
             return
+
+
+def fetch_chapter(chapter_index: int, chapter: dict, base_dir: str):
+    chapter_name = to_name(chapter['name'])
+
+    print(f"开始下载第 {chapter_index} 章：{chapter_name}")
+    chapter_dir = os.path.join(base_dir, f"{chapter_index} - {chapter_name}")
+    os.makedirs(chapter_dir, exist_ok=True)
+    for j, lecture in enumerate(chapter['children'], 1):
+        fetch_single(f'{chapter_index}-{j}', lecture, chapter_dir)
+
+    print(f"第 {chapter_index} 章：{chapter_name} 下载完成")
 
 
 def fetch_single(lecture_index: str, lecture_info: dict, base_dir: str):
