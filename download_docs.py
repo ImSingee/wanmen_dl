@@ -43,7 +43,7 @@ def download_documents(course_id: str, course_name: str, base_dir: str):
             with requests.get(doc['url'], stream=True) as r:
                 r.raise_for_status()
 
-                for chunk in r.iter_content(chunk_size=8192):
+                for chunk in r.iter_content(chunk_size=8*1024*1024):
                     f.write(chunk)
 
         os.rename(temp_to, to)
