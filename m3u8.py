@@ -92,6 +92,6 @@ def download_for(session, url: str, save_to: str, *, full=False):
 
 
 def ffmpegConvertToMp4(input_file_path, output_file_path):
-    code = os.system(f'ffmpeg -y -loglevel error -i "{input_file_path}" -bsf:a aac_adtstoasc -vcodec copy -acodec copy "{output_file_path}"')
+    code = os.system(f"ffmpeg -y -loglevel error -i '{input_file_path}' -bsf:a aac_adtstoasc -vcodec copy -acodec copy '{output_file_path}'")
     if code != 0:
         raise RuntimeError("无法转换为 mp4")
