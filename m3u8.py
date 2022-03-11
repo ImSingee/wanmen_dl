@@ -33,12 +33,13 @@ def download(session, url: str, mid_url: str, save_to: str, *, full=False):
     if result:
         return
 
-    print("超清版本下载失败，尝试下载高清版本")
-    result = download_for(session, mid_url, save_to, full=full)
-    if result:
-        return
+    if os.environ.get("ALLOW_FALLBACK") == "1":
+        print("超清版本下载失败，尝试下载高清版本")
+        result = download_for(session, mid_url, save_to, full=full)
+        if result:
+            return
 
-    print("高清版本下载仍失败 -> 终止")
+        print("高清版本下载仍失败 -> 终止")
     exit(-1)
 
 
