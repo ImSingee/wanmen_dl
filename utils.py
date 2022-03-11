@@ -37,6 +37,7 @@ def to_name(title: str):
     title = title.replace('*', ' ', sys.maxsize)
     title = title.replace('?', ' ', sys.maxsize)
     title = title.replace('"', ' ', sys.maxsize)
+    title = title.replace("'", ' ', sys.maxsize)
     title = title.replace('<', ' ', sys.maxsize)
     title = title.replace('>', ' ', sys.maxsize)
     title = title.replace('|', ' ', sys.maxsize)
