@@ -1,0 +1,4 @@
+while read id
+do
+    ./download $id
+done < ./to_download
