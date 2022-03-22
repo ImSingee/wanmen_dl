@@ -30,6 +30,11 @@ if __name__ == '__main__':
     if len(sys.argv) > 2:
         course_name = sys.argv[2]
     else:
-        course_name = CONFIG['NameMap'][course_id]
+        if course_id in CONFIG['NameMap']:
+            course_name = CONFIG['NameMap'][course_id]
+        else:
+            from names import names
+
+            course_name = names.get(course_id, "(未知)")
 
     check_done(course_id, course_name, CONFIG['DownloadTo'])
