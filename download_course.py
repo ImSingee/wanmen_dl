@@ -13,7 +13,7 @@ def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=
 
     print(f"开始获取 {course_name} 的课程信息")
 
-    r = requests.get(f'https://api.wanmen.org/4.0/content/lectures?courseId={course_id}&debug=1', headers=get_headers())
+    r = requests.get(f'https://api.wanmen.org/4.0/content/lectures?courseId={course_id}&debug=1', headers=get_headers(), timeout=2)
 
     if r.status_code != 200:
         print("错误 - 无法获取课程信息")
@@ -138,7 +138,7 @@ def fetch_single(lecture_index: str, lecture_info: dict, base_dir: str, *, sessi
         print(save_to, "已存在 -> 跳过")
         return
 
-    r = session.get(f'https://api.wanmen.org/4.0/content/lectures/{lecture_id}?routeId=main&debug=1', headers=get_headers())
+    r = session.get(f'https://api.wanmen.org/4.0/content/lectures/{lecture_id}?routeId=main&debug=1', headers=get_headers(), timeout=2)
 
     if r.status_code != 200:
         print("错误 - 无法获取课程信息")

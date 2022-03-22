@@ -12,7 +12,7 @@ def download_documents(course_id: str, course_name: str, base_dir: str):
 
     print(f"准备下载文档，开始获取 {course_name} 的课程信息")
 
-    r = requests.get(f'https://api.wanmen.org/4.0/content/v2/courses/{course_id}', headers=get_headers())
+    r = requests.get(f'https://api.wanmen.org/4.0/content/v2/courses/{course_id}', headers=get_headers(), timeout=2)
     r.raise_for_status()
 
     info = r.json()
