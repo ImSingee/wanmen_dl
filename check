@@ -1,4 +1,4 @@
 while read id
 do
     python check.py $id
-done < ./to_download
+done < "./to_download$1"

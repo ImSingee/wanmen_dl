@@ -17,4 +17,4 @@ while read id; do
         echo >&3
     }&
     sleep 1
-done < ./to_download
+done < "./to_download$1"
