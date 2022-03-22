@@ -1,5 +1,7 @@
 import os
 import sys
+import time
+
 import requests
 from requests import Session
 from config import CONFIG
@@ -9,7 +11,7 @@ from utils import to_name, get_headers
 
 def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=None):
     course_name = to_name(course_name)
-    base_dir = os.path.join(base_dir, course_name)
+    course_dir = os.path.join(base_dir, course_name)
 
     print(f"开始获取 {course_name} 的课程信息")
 
@@ -25,7 +27,7 @@ def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=
     print("获取成功，即将开始下载")
 
     if lecture_id is None:  # 下载全部
-        fetch_all_chapters(chapters, base_dir)
+        fetch_all_chapters(chapters, course_dir)
         print(f"{course_name} 下载完成")
     else:
         found = False
@@ -39,7 +41,7 @@ def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=
                     continue
 
                 found = True
-                chapter_dir = os.path.join(base_dir, f"{i} - {chapter_name}")
+                chapter_dir = os.path.join(course_dir, f"{i} - {chapter_name}")
                 os.makedirs(chapter_dir, exist_ok=True)
                 fetch_single(f'{i}-{j}', lecture, chapter_dir)
         if not found:
@@ -47,14 +49,25 @@ def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=
             return
 
 
-def fetch_all_chapters(chapters, base_dir: str):
+def fetch_all_chapters(chapters, course_dir: str):
+    done_file = os.path.join(course_dir, ".done")
+
+    if os.path.exists(done_file):
+        print("Already done, auto skip")
+        print("If you want to re-download, please run")
+        print(f"> rm -i '{done_file}'")
+        return
+
     if CONFIG['NumProcess'] != 1:
         if CONFIG['NumProcess'] == 0:
             CONFIG['NumProcess'] = os.cpu_count()
 
-        fetch_all_chapters_with_multiprocessing(chapters, base_dir)
+        fetch_all_chapters_with_multiprocessing(chapters, course_dir)
     else:
-        fetch_all_chapters_with_single_thread(chapters, base_dir)
+        fetch_all_chapters_with_single_thread(chapters, course_dir)
+
+    with open(os.path.join(course_dir, ".done"), 'w') as f:
+        f.write(str(time.time()))
 
 
 def fetch_all_chapters_with_single_thread(chapters, base_dir: str):
