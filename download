@@ -4,7 +4,7 @@ elif [ $# -eq 2 ] ; then
     python register.py "$1" "$2"
 fi
 
-while true; do
+for i in {1..20}; do
     python download_course.py "$1"
 
     if [ "$?" == 0 ]; then
