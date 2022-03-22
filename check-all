@@ -1,0 +1,8 @@
+./check
+
+for i in {1..20}; do
+    FILE="./to_download$i"
+    if test -f "$FILE"; then
+        ./check $i
+    fi
+done
