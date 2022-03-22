@@ -1,0 +1,19 @@
+[ -e /tmp/wanmen_dl_fifo ] || mkfifo /tmp/wanmen_dl_fifo
+
+exec 3<> /tmp/wanmen_dl_fifo
+
+rm -f /tmp/wanmen_dl_fifo
+
+for i in {1..3};
+do
+    echo >&3
+done
+
+
+while read id; do
+    read -u3
+    {
+        ./download $id
+        echo >&3
+    }&
+done < ./to_download
