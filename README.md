@@ -1,5 +1,12 @@
 # 某某培训机构视频下载器
 
+## 使用指引
+
+[https://coda.io/d/_dgfjTL5H1n1/_suy2E#_luFTb](https://coda.io/d/_dgfjTL5H1n1/_suy2E#_luFTb)
+
+
+
+
 ## 配置 Token 与下载路径
 
 创建 config.json 文件，写入类似下面的内容
