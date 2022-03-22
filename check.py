@@ -18,8 +18,10 @@ def check_done(course_id: str, course_name: str, base_dir: str):
 
     if os.path.exists(done_file):
         print(f"{course_id}\tDONE\t{course_name}")
-    else:
+    elif os.path.exists(course_dir):
         print(f"{course_id}\tDOWNLOADING\t{course_name}")
+    else:
+        print(f"{course_id}\tPREPARE\t{course_name}")
 
 
 if __name__ == '__main__':
