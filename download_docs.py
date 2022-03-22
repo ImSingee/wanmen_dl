@@ -3,7 +3,7 @@ import sys
 import os
 import requests
 from config import CONFIG
-from utils import get_headers, to_name, requests_get
+from utils import get_headers, to_name, requests_get, get_name_from_id
 
 
 def download_documents(course_id: str, course_name: str, base_dir: str):
@@ -59,6 +59,6 @@ if __name__ == '__main__':
     if len(sys.argv) > 2:
         course_name = sys.argv[2]
     else:
-        course_name = CONFIG['NameMap'][course_id]
+        course_name = get_name_from_id(course_id)
 
     download_documents(course_id, course_name, CONFIG['DownloadTo'])

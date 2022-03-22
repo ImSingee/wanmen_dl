@@ -7,7 +7,7 @@ from requests import Session
 from requests.adapters import HTTPAdapter
 from config import CONFIG
 from m3u8 import download
-from utils import to_name, get_headers, requests_get
+from utils import to_name, get_headers, requests_get, get_name_from_id
 
 
 def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=None):
@@ -182,7 +182,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 2:
         course_name = sys.argv[2]
     else:
-        course_name = CONFIG['NameMap'][course_id]
+        course_name = get_name_from_id(course_id)
 
     if len(sys.argv) > 3:
         lecture_id = sys.argv[3]

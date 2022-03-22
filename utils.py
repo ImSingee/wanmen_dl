@@ -51,3 +51,11 @@ def requests_get(*args, **kwargs):
     with Session() as session:
         session.mount('https://api.wanmen.org', HTTPAdapter(max_retries=5))
         return session.get(*args, **kwargs)
+
+
+def get_name_from_id(course_id):
+    if course_id in CONFIG['NameMap']:
+        return CONFIG['NameMap'][course_id]
+    else:
+        from names import names
+        return names[course_id]
