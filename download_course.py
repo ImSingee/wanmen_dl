@@ -4,9 +4,10 @@ import time
 
 import requests
 from requests import Session
+from requests.adapters import HTTPAdapter
 from config import CONFIG
 from m3u8 import download
-from utils import to_name, get_headers
+from utils import to_name, get_headers, requests_get
 
 
 def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=None):
@@ -15,7 +16,7 @@ def fetch_course(course_id: str, course_name: str, base_dir: str, *, lecture_id=
 
     print(f"开始获取 {course_name} 的课程信息")
 
-    r = requests.get(f'https://api.wanmen.org/4.0/content/lectures?courseId={course_id}&debug=1', headers=get_headers(), timeout=2)
+    r = requests_get(f'https://api.wanmen.org/4.0/content/lectures?courseId={course_id}&debug=1', headers=get_headers(), timeout=2)
 
     if r.status_code != 200:
         print("错误 - 无法获取课程信息")
@@ -122,6 +123,7 @@ def ensure_session(f):
 
         if session is None:
             with Session() as session:
+                session.mount('https://api.wanmen.org', HTTPAdapter(max_retries=5))
                 kwargs['session'] = session
                 return f(*args, **kwargs)
         else:

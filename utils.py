@@ -1,6 +1,8 @@
 import sys
 import time
 import hashlib
+from requests import Session
+from requests.adapters import HTTPAdapter
 from config import CONFIG
 
 
@@ -43,3 +45,9 @@ def to_name(title: str):
     title = title.replace('|', ' ', sys.maxsize)
 
     return title.strip()
+
+
+def requests_get(*args, **kwargs):
+    with Session() as session:
+        session.mount('https://api.wanmen.org', HTTPAdapter(max_retries=5))
+        return session.get(*args, **kwargs)
