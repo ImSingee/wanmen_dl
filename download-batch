@@ -16,4 +16,5 @@ while read id; do
         ./download $id
         echo >&3
     }&
+    sleep 1
 done < ./to_download
